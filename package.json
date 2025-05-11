@@ -1,0 +1,38 @@
+{
+	"name": "milenium",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@nestjs/cli": "^11.0.7",
+		"@swc/core": "^1.11.24",
+		"@types/node": "latest",
+		"ts-node": "^10.9.2",
+		"tsup": "^8.4.0",
+		"tsx": "^4.19.4",
+		"typeorm": "^0.3.23"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"scripts": {
+		"dev": "tsup src/index.ts --watch --onSuccess 'node dist/index.cjs'",
+		"build": "tsup src/index.ts",
+		"start": "node dist/index.cjs",
+		"migration:generate": "typeorm migration:generate src/db/migrations/$(date +%Y%m%d%H%M%S)-migration -o",
+		"migration:run": "typeorm migration:run",
+		"migration:revert": "typeorm migration:revert"
+	},
+	"dependencies": {
+		"@mastondzn/dank-twitch-irc": "^7.2.1",
+		"@nestjs/axios": "^4.0.0",
+		"@nestjs/common": "^11.1.0",
+		"@nestjs/config": "^4.0.2",
+		"@nestjs/core": "^11.1.0",
+		"@nestjs/platform-express": "^11.1.0",
+		"@nestjs/typeorm": "^11.0.0",
+		"axios": "^1.9.0",
+		"pg": "^8.15.6",
+		"reflect-metadata": "^0.2.2"
+	}
+}
