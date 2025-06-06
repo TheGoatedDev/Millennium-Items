@@ -4,39 +4,31 @@
 	"type": "module",
 	"private": true,
 	"devDependencies": {
-		"@nestjs/cli": "^11.0.7",
+		"@biomejs/biome": "^1.9.4",
 		"@swc/core": "^1.11.24",
 		"@types/node": "latest",
 		"ts-node": "^10.9.2",
 		"tsup": "^8.4.0",
 		"tsx": "^4.19.4",
-		"typeorm": "^0.3.23"
-	},
-	"peerDependencies": {
 		"typescript": "^5"
 	},
 	"scripts": {
-		"dev": "tsup src/index.ts --watch --onSuccess 'node dist/index.cjs'",
+		"dev": "tsx watch src/index.ts",
 		"build": "tsup src/index.ts",
-		"start": "node dist/index.cjs",
+		"start": "node dist/index.js",
 		"migration:generate": "typeorm migration:generate src/db/migrations/$(date +%Y%m%d%H%M%S)-migration -o",
 		"migration:run": "typeorm migration:run",
 		"migration:revert": "typeorm migration:revert"
 	},
 	"dependencies": {
 		"@mastondzn/dank-twitch-irc": "^7.2.1",
-		"@nestjs/axios": "^4.0.0",
-		"@nestjs/common": "^11.1.0",
-		"@nestjs/config": "^4.0.2",
-		"@nestjs/core": "^11.1.0",
-		"@nestjs/platform-express": "^11.1.0",
-		"@nestjs/swagger": "^11.2.0",
-		"@nestjs/typeorm": "^11.0.0",
 		"axios": "^1.9.0",
-		"class-transformer": "^0.5.1",
-		"class-validator": "^0.14.2",
+		"dotenv": "^16.4.5",
 		"pg": "^8.15.6",
+		"pino": "^9.7.0",
+		"pino-pretty": "^13.0.0",
 		"reflect-metadata": "^0.2.2",
-		"rxjs": "^7.8.2"
+		"typeorm": "^0.3.23",
+		"zod": "^3.25.55"
 	}
 }
