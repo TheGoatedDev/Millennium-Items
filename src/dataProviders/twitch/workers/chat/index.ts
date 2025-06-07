@@ -3,6 +3,7 @@ import { getTwitchAPI, TwitchAPI } from "../../api";
 import { Repository } from "typeorm";
 import { TwitchIdentity } from "@/db/entities/twitchIdentity";
 import { twitchIdentityRepository } from "@/db/repositories";
+import { watchChat } from "@/processors/twitch/watchChat";
 
 export class TwitchChatWorkerManager {
 	private readonly logger = createLogger("TwitchChatWorkerManager");
@@ -26,30 +27,36 @@ export class TwitchChatWorkerManager {
 			"Twitch identities to check for streams",
 		);
 
-		const twitchIdentitiesWithStreams = await Promise.all(
-			twitchIdentities.map(async (twitchIdentity) => {
-				const streams = await this.twitchApi.getStreamsByLogin(
-					twitchIdentity.login,
-				);
+		for (const twitchIdentity of twitchIdentities) {
+			const streams = await this.twitchApi.getStreamsByLogin(
+				twitchIdentity.login,
+			);
 
-				if (streams.data.length === 0) {
-					return null;
-				}
+			if (streams.data.length === 0) {
+				continue;
+			}
 
-				this.logger.info(
-					{
-						twitchIdentity: twitchIdentity.login,
-						stream: streams.data[0],
-					},
-					"Twitch identity retrieved",
-				);
+			const stream = streams.data[0];
 
-				return {
-					...twitchIdentity,
-					stream: streams.data[0],
-				};
-			}),
-		);
+			if (!stream) {
+				continue;
+			}
+
+			this.logger.info(
+				{
+					twitchIdentity: twitchIdentity.login,
+					stream,
+				},
+				"Twitch identity retrieved",
+			);
+
+			twitchIdentity.isLive = true;
+			twitchIdentity.lastViewerCount = stream.viewer_count;
+
+			await this.twitchIdentityRepository.save(twitchIdentity);
+
+			watchChat(twitchIdentity);
+		}
 
 		this.logger.info(
 			{ count: twitchIdentities.length },
